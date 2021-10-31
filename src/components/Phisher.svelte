@@ -1,8 +1,11 @@
 <script lang="ts">
-    import { CardStore } from "../stores/Cards";
+    import { CampaignStore } from "../stores/Campaigns";
     import { onMount } from "svelte";
+    import Overlay from "./Overlay.svelte";
     import Card from "./Card.svelte";
     import Hammer from "hammerjs";
+    import type { Campaign } from "../types";
+
     let cards = [],
         board,
         cardElements,
@@ -14,7 +17,7 @@
         startPosX,
         startPosY,
         result;
-    const preload = 3;
+    const preload = 1;
 
     onMount(() => {
         board = document.getElementById("holder");
@@ -25,8 +28,8 @@
     async function reload() {
         const newCards = [];
         for (let i = cards.length; i < preload; i++) {
-            const pokemon = await CardStore.getPokemon();
-            newCards.push(pokemon);
+            const campaign: Campaign = await CampaignStore.getCampaign();
+            newCards.push(campaign);
         }
         cards = [...cards, ...newCards];
         setTimeout(handle, 300);
@@ -34,18 +37,19 @@
 
     // Hammer js implementation
     function handle() {
-        result = null;
+        result = {
+            opacity: 0,
+            phishing: true,
+        };
         cardElements = board.querySelectorAll(".card");
         topCard = cardElements[cardElements.length - 1];
 
         if (cardElements.length) {
-            topCard.style.transform =
-                "translateX(-50%) translateY(-50%) rotate(0deg) rotateY(0deg) scale(1)";
             if (hammer) hammer.destroy();
             hammer = new Hammer(topCard);
             hammer.add(
                 new Hammer.Pan({
-                    direction: Hammer.DIRECTION_ALL,
+                    direction: Hammer.DIRECTION_HORIZONTAL,
                     threshold: 0,
                 })
             );
@@ -79,7 +83,7 @@
 
         // get ratio between swiped pixels and the axes
         let propX = e.deltaX / board.clientWidth;
-        let propY = e.deltaY / board.clientHeight;
+        console.log(posX);
 
         // get swipe direction, left (-1) or right (1)
         let dirX = e.deltaX < 0 ? -1 : 1;
@@ -89,7 +93,6 @@
 
         // move and rotate top card
         topCard.style.transform = `translateX(${posX}px) translateY(${posY}px) rotate(${deg}deg) rotateY(0deg) scale(1)`;
-        topCard.style.transform = `translateX(${posX}px) translateY(${posY}px)`;
 
         if (e.isFinal) {
             isPanning = false;
@@ -101,10 +104,10 @@
                     e.direction
                 )
             ) {
-                if (posX > 0.25) {
+                if (posX > 1) {
                     swipped = true;
                     posX = board.clientWidth;
-                } else if (posX < -0.25) {
+                } else if (posX < -1) {
                     swipped = true;
                     posX = -(board.clientWidth + topCard.clientWidth);
                 }
@@ -114,30 +117,25 @@
                 setTimeout(() => rate(e.direction), 200);
             } else {
                 topCard.style.transition = "transform 200ms ease-out";
-                topCard.style.transform = "translateX(-50%) translateY(-50%)";
+                topCard.style.transform = "unset";
             }
         }
     }
 
     // Send report to api and shift array
     function rate(direction) {
-        result = direction == Hammer.DIRECTION_LEFT;
+        result = {
+            opacity: 100,
+            phishing: direction == Hammer.DIRECTION_LEFT,
+        };
         // Call api
         cards.shift();
-        setTimeout(reload, 2000);
+        setTimeout(reload, 500);
     }
 </script>
 
 <div id="holder">
-    <div
-        class="transition-panel {result != null
-            ? result
-                ? 'phishing'
-                : 'safe'
-            : ''}"
-    >
-        <h1>{result ? "PHISHING" : "NOT PHISHING"}</h1>
-    </div>
+    <Overlay {...result} />
     {#if cards.length}
         {#each cards as card}
             <Card {...card} />
@@ -150,33 +148,6 @@
         width: 100%;
         height: 100vh;
         position: relative;
-        overflow: hidden;
         background-color: #f5f7fa;
-    }
-    .transition-panel {
-        pointer-events: none;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #f5f7fa;
-        z-index: 99;
-        opacity: 0;
-        transition: opacity 0.4ms ease-in-out;
-        text-transform: uppercase;
-        &.phishing {
-            opacity: 1;
-            background-color: rgb(201, 89, 56);
-        }
-        &.safe {
-            opacity: 1;
-            background-color: rgb(81, 192, 81);
-        }
-        h1 {
-            font-size: 2rem;
-            font-weight: 700;
-        }
     }
 </style>

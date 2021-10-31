@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Phisher from "./modules/phisher/components/Phisher.svelte";
-	import Tailwind from "./libraries/Tailwind.svelte";
+	import Phisher from "./components/Phisher.svelte";
+	import Tailwind from "./lib/Tailwind.svelte";
 	import { onMount } from "svelte";
 
 	let ready = false;
