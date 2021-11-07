@@ -7,10 +7,11 @@
     }
 </script>
 
-<div class="html-holder" on:click={handleClick}>{@html content}</div>
+<div class="html-holder no-touch" on:click={handleClick}>{@html content}</div>
 
 <style lang="scss">
     .html-holder {
         pointer-events: none;
+        overflow-x: hidden;
     }
 </style>
