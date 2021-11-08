@@ -1,9 +1,7 @@
 export class TouchedJs {
     element;
     moving;
-    finished;
     startPos;
-    currentPos;
 
     constructor(element, options = {}) {
         this.element = element;
@@ -20,33 +18,37 @@ export class TouchedJs {
 
     handleMove = (e) => {
         if (!this.moving) return;
+        const pos = this.getPos(e);
 
-        this.currentPos = {
-            x: e.clientX - this.startPos.x,
-            y: e.clientY - this.startPos.y
-        }
-
-        this.element.dispatchEvent(new CustomEvent('pan', { bubbles: true, cancelable: true, detail: { e, pos: this.currentPos } }));
+        this.element.dispatchEvent(new CustomEvent('pan', { bubbles: true, cancelable: true, detail: { e, pos } }));
     }
 
     handleStart = (e) => {
         if (e.target !== this.element) return;
-
         this.moving = true;
-        this.finished = false;
-        this.startPos = {
-            x: e.clientX,
-            y: e.clientY
-        }
+        const pos = this.getPos(e);
+        this.startPos = pos;
 
-        this.element.dispatchEvent(new CustomEvent('start', { bubbles: true, cancelable: true, detail: e }));
+        this.element.dispatchEvent(new CustomEvent('start', { bubbles: true, cancelable: true, detail: { e, pos } }));
     }
 
     handleEnd = (e) => {
         this.moving = false;
-        this.finished = true;
 
-        this.element.dispatchEvent(new CustomEvent('end', { bubbles: true, cancelable: true, detail: e }));
+        this.element.dispatchEvent(new CustomEvent('end', { bubbles: true, cancelable: true, detail: { e } }));
     }
 
+    getPos(e) {
+        if (e instanceof TouchEvent) {
+            return {
+                x: e.touches[0].clientX,
+                y: e.touches[0].clientY
+            }
+        } else {
+            return {
+                x: e.clientX,
+                y: e.clientY
+            }
+        }
+    }
 }

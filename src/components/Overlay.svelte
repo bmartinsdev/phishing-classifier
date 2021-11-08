@@ -1,15 +1,13 @@
 <script lang="ts">
-    export let phishing: boolean = true;
-    export let opacity: Number = 0;
+    export let state: boolean | null = null;
+    export let type: string = "hidden";
 </script>
 
 <div
-    class="transition-panel"
-    style="background-color: {phishing
-        ? '#c45668'
-        : '#56c46e'}; opacity: {opacity}"
+    class="transition-panel {type}"
+    style="background-color: {state ? '#c45668' : '#56c46e'};"
 >
-    {#if phishing}
+    {#if state}
         <h1>PHISHING</h1>
     {:else}
         <h1>NOT PHISHING</h1>
@@ -33,6 +31,12 @@
         h1 {
             font-size: 2rem;
             font-weight: 700;
+        }
+        &.preview {
+            opacity: 0.2;
+        }
+        &.full {
+            opacity: 1;
         }
     }
 </style>
