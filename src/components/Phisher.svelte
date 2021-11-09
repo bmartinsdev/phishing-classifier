@@ -24,7 +24,7 @@
         },
         state: null,
         screenWidth: 0,
-        threshold: 0.3,
+        threshold: 0.2,
         result: "hidden",
     };
 
@@ -51,9 +51,11 @@
         // call api
         await setTimeout(() => {
             panning.result = "full";
-            activeCardEl.style.transform = `unset`;
 
-            setTimeout(() => (panning.result = "hidden"), 2000);
+            setTimeout(() => {
+                panning.result = "hidden";
+                activeCardEl.style.transform = `unset`;
+            }, 2000);
         }, 200);
     }
 
@@ -128,5 +130,7 @@
         position: relative;
         background-color: #f5f7fa;
         overflow-x: hidden;
+        justify-content: center;
+        display: flex;
     }
 </style>

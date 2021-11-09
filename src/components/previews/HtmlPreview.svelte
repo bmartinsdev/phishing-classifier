@@ -3,7 +3,6 @@
 
     function handleClick(e: Event) {
         e.preventDefault();
-        console.log(e.target);
     }
 </script>
 

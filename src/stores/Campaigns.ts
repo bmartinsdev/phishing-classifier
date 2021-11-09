@@ -8,6 +8,7 @@ const getCampaign = async () => {
     const newCampaign: Campaign = {
         subject: `Random campaign subject ${id}`,
         type: CampaignType.html,
+        links: linkFinder(res),
         content: res
     }
     return newCampaign;
@@ -23,6 +24,23 @@ function createCampaignStore() {
             }
         }
     };
+}
+
+function linkFinder(html) {
+    const regex = /\/\/([0-9a-z]*\.[\.0-9a-z]*)[\/\"\']/gi;
+
+    let match;
+    const matches = [];
+
+    while ((match = regex.exec(html)) !== null) {
+        if (match.index === regex.lastIndex) {
+            regex.lastIndex++;
+        }
+
+        matches.push(match[1]);
+    }
+
+    return [...new Set(matches)];
 }
 
 export const CampaignStore = createCampaignStore();

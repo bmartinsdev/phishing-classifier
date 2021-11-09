@@ -26,7 +26,7 @@
         background-color: #f5f7fa;
         z-index: 99;
         opacity: 0;
-        transition: opacity 0.4ms ease-in-out;
+        transition: opacity 0.2s ease-in-out;
         text-transform: uppercase;
         h1 {
             font-size: 2rem;
