@@ -7,7 +7,7 @@ export interface Campaign {
 	subject?: string,
 	links?: Array<any>,
 	type: CampaignType,
-	content: string
+	content?: string
 }
 
 export enum CampaignType {

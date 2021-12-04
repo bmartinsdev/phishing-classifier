@@ -55,20 +55,19 @@
             setTimeout(() => {
                 panning.result = "hidden";
                 activeCardEl.style.transform = `unset`;
-            }, 2000);
+            }, 1000);
         }, 200);
     }
 
     async function listen() {
         await tick();
         activeCardEl = document.getElementById("active-card");
-        const touched = new TouchedJs(activeCardEl);
+        new TouchedJs(activeCardEl);
         const style = window.getComputedStyle(activeCardEl);
         const mx = style.transform.match(/^matrix\((.+)\)$/);
         panning.pos.start.x = mx ? parseFloat(mx[1].split(", ")[4]) : 0;
 
         activeCardEl.addEventListener("pan", (customEvent) => {
-            const event = customEvent.detail.e;
             panning.pos.current = customEvent.detail.pos;
 
             let posX = panning.pos.current.x - panning.pos.start.x;

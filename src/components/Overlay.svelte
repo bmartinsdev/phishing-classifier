@@ -5,12 +5,12 @@
 
 <div
     class="transition-panel {type}"
-    style="background-color: {state ? '#c45668' : '#56c46e'};"
+    style="background-color: {state ? '#56c46e' : '#c45668'};"
 >
     {#if state}
-        <h1>PHISHING</h1>
-    {:else}
         <h1>NOT PHISHING</h1>
+    {:else}
+        <h1>PHISHING</h1>
     {/if}
 </div>
 
@@ -19,7 +19,7 @@
         pointer-events: none;
         width: 100%;
         height: 100%;
-        position: absolute;
+        position: fixed;
         display: flex;
         align-items: center;
         justify-content: center;

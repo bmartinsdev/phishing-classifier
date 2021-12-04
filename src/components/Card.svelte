@@ -5,14 +5,13 @@
     export let subject = "";
     export let type = 1;
     export let content = "";
-    export let links = "";
+    export let links = [];
 </script>
 
 <div
     class="card flex flex-col p-4 m-5 border-solid border-gray-200 border no-touch"
     id="active-card"
 >
-    <a href="//thisisasite.com">teste</a>
     {#if subject}
         <h5>Subject</h5>
         <p>{subject}</p>
@@ -35,6 +34,7 @@
     .card {
         position: absolute;
         box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.1);
+        padding-bottom: 3rem;
         background-color: white;
         max-width: 600px;
         h5 {
